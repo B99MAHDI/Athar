@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ATHAR – Valorisation de l’artisanat marocain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f5f9;--surface:#fff;--ink:#17233f;--muted:#55607a;--navy:#1b2a4a;--gold:#b8893a;--gold-ink:#7d5a1a;--copper:#a9482f;--line:#d9deea;--on-navy:#f5efe0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1830;--surface:#17233f;--ink:#eef0f6;--muted:#a9b3cc;--navy:#0a1226;--gold:#d4a554;--gold-ink:#e0b566;--copper:#e0795e;--line:#2b3a5e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1830;--surface:#17233f;--ink:#eef0f6;--muted:#a9b3cc;--navy:#0a1226;--gold:#d4a554;--gold-ink:#e0b566;--copper:#e0795e;--line:#2b3a5e;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.6 Mulish,system-ui,sans-serif;padding-bottom:76px}
+h1,h2,h3{font-family:Amiri,Georgia,serif;line-height:1.2;margin:0 0 .5em;color:var(--ink)}
+h2{font-size:1.9rem}h3{font-size:1.25rem}
+p{margin:0 0 1em;max-width:68ch}
+a{color:var(--gold-ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header.top{background:var(--navy);color:var(--on-navy);position:sticky;top:env(safe-area-inset-top,0px);z-index:20}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--navy);z-index:30}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px}
+.brand{font:700 1.6rem Amiri,Georgia,serif;letter-spacing:.14em;color:var(--gold);text-decoration:none}
+.brand small{font:400 .8rem Mulish,sans-serif;letter-spacing:0;color:var(--on-navy);margin-left:8px}
+nav a{color:inherit;text-decoration:none}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--navy);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));border-top:2px solid var(--gold)}
+nav.tabs a{flex:1;text-align:center;padding:8px 2px;font-size:.78rem;color:var(--on-navy);border-radius:8px}
+nav.tabs a span{display:block;font-size:1.25rem;line-height:1.2}
+nav.tabs a[aria-current="page"]{color:var(--gold);font-weight:700}
+.hero{background:var(--navy);color:var(--on-navy);position:relative;overflow:hidden;padding:48px 0 56px}
+.hero::before{content:"";position:absolute;inset:0;opacity:.16;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 4l9 21 22-6-8 22 15 15-22 6 3 22-19-12-19 12 3-22-22-6 15-15-8-22 22 6z' fill='none' stroke='%23d4a554' stroke-width='1.5'/%3E%3C/svg%3E")}
+.hero .wrap{position:relative}
+.hero .ar{font:400 clamp(4rem,16vw,8rem)/1 Amiri,serif;color:var(--gold);margin:0}
+.hero h1{color:var(--on-navy);font-size:clamp(1.7rem,5vw,2.8rem);max-width:20ch}
+.hero p{color:#dfe3ee}
+.btn{display:inline-block;background:var(--gold);color:#1b1405;font:700 1rem Mulish,sans-serif;border:0;border-radius:999px;padding:12px 24px;cursor:pointer;text-decoration:none;min-height:44px}
+.btn.alt{background:transparent;color:var(--on-navy);border:2px solid var(--gold);margin-left:8px}
+section.view{padding:36px 0}
+.quote{border-inline-start:4px solid var(--gold);padding:4px 0 4px 18px;font:italic 1.2rem/1.5 Amiri,Georgia,serif}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.odd{border-top:6px solid var(--c)}
+.odd b{font:700 1.5rem Amiri,serif;color:var(--c)}
+.odd.o5{--c:var(--copper)}.odd.o8{--c:var(--ink)}.odd.o12{--c:var(--gold-ink)}
+.tools{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+select,input,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:44px;width:100%}
+.tools select,.tools input{width:auto;flex:1 1 180px}
+.chip{display:inline-block;font-size:.8rem;border:1px solid var(--gold);color:var(--gold-ink);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0}
+.avatar{width:56px;height:56px;border-radius:50%;background:var(--navy);color:var(--gold);display:grid;place-items:center;font:700 1.4rem Amiri,serif;margin-bottom:10px}
+.fav{float:right;background:none;border:0;font-size:1.5rem;cursor:pointer;color:var(--copper);min-width:44px;min-height:44px;margin:-10px -10px 0 0}
+.note{font-size:.85rem;color:var(--muted)}
+.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+label{display:block;font-weight:600;margin:14px 0 4px}
+.ok{background:var(--surface);border:2px solid var(--gold);border-radius:12px;padding:18px}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:24px 20px}
+@media (min-width:760px){
+body{padding-bottom:0}
+nav.tabs{position:static;background:none;border:0;padding:0;display:flex;gap:4px}
+nav.tabs a{flex:none;font-size:.95rem;padding:8px 14px}
+nav.tabs a span{display:none}
+nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+<a class="brand" href="#accueil" aria-label="ATHAR, accueil">ATHAR <small>أثر</small></a>
+<nav class="tabs" aria-label="Navigation principale">
+<a href="#accueil"><span aria-hidden="true">🏠</span>Accueil</a>
+<a href="#artisans"><span aria-hidden="true">🏺</span>Artisans</a>
+<a href="#actions"><span aria-hidden="true">🤝</span>Actions</a>
+<a href="#equipe"><span aria-hidden="true">👥</span>Équipe</a>
+<a href="#contact"><span aria-hidden="true">✉️</span>Contact</a>
+</nav></div></header>
+
+<main>
+<section class="view" id="accueil" style="padding:0">
+<div class="hero"><div class="wrap">
+<p class="ar" lang="ar">أثر</p>
+<h1>Un héritage de sens, un avenir de possibilités</h1>
+<p>ATHAR valorise les savoir-faire des artisans marocains, fait rayonner leurs histoires et préserve leur héritage culturel.</p>
+<a class="btn" href="#artisans">Découvrir les artisans</a><a class="btn alt" href="#contact">Nous rejoindre</a>
+</div></div>
+<div class="wrap" style="padding-top:36px;padding-bottom:36px">
+<h2>La problématique</h2>
+<p class="quote">Comment contribuer au développement durable et à l’autonomisation socio-économique des artisans marocains, en valorisant leurs savoir-faire, en renforçant leur visibilité et en proposant des actions adaptées à leurs besoins ?</p>
+<h2 style="margin-top:32px">Nos objectifs de développement durable</h2>
+<div class="grid">
+<div class="card odd o5"><b>ODD 5</b><h3>Égalité entre les sexes</h3><p class="note" style="color:var(--ink)">Autonomisation des femmes artisanes au sein des associations et coopératives locales.</p></div>
+<div class="card odd o8"><b>ODD 8</b><h3>Travail décent et croissance</h3><p class="note" style="color:var(--ink)">Soutien aux revenus des artisans, valorisation du travail manuel et inclusion économique.</p></div>
+<div class="card odd o12"><b>ODD 12</b><h3>Consommation responsable</h3><p class="note" style="color:var(--ink)">Valorisation de la production artisanale durable, locale et écoresponsable.</p></div>
+</div></div>
+</section>
+
+<section class="view wrap" id="artisans" hidden>
+<h2>Les artisans</h2>
+<p>Parcourez les profils, filtrez par métier ou par ville, et enregistrez vos favoris.</p>
+<p class="note">Profils fictifs, à remplacer par les artisans réels du projet.</p>
+<div class="tools">
+<input id="q" type="search" placeholder="Rechercher un nom, un savoir-faire…" aria-label="Rechercher">
+<select id="fm" aria-label="Filtrer par métier"><option value="">Tous les métiers</option></select>
+<select id="fv" aria-label="Filtrer par ville"><option value="">Toutes les villes</option></select>
+<select id="ff" aria-label="Filtrer par favoris"><option value="">Tous les profils</option><option value="1">Mes favoris</option></select>
+</div>
+<div class="grid" id="list" aria-live="polite"></div>
+</section>
+
+<section class="view wrap" id="actions" hidden>
+<h2>Nos actions</h2>
+<p>Des actions concrètes, adaptées aux besoins des artisans et des coopératives.</p>
+<div class="grid">
+<div class="card"><h3>Rencontres et portraits</h3><p>Aller à la rencontre des artisans, recueillir leurs histoires et les partager.</p><span class="chip">Visibilité</span><span class="chip">ODD 8</span></div>
+<div class="card"><h3>Appui aux coopératives de femmes</h3><p>Ateliers de gestion, de tarification et de commercialisation avec les coopératives locales.</p><span class="chip">Formation</span><span class="chip">ODD 5</span></div>
+<div class="card"><h3>Vitrine du produit local</h3><p>Mettre en avant des créations durables, locales et écoresponsables.</p><span class="chip">Vente</span><span class="chip">ODD 12</span></div>
+</div>
+<p class="note" style="margin-top:16px">Contenu proposé à partir de la fiche projet : ajustez-le avec vos actions réelles.</p>
+</section>
+
+<section class="view wrap" id="equipe" hidden>
+<h2>L’équipe du projet</h2>
+<div class="grid">
+<div class="card"><div class="avatar">G</div><h3>Ghitha Benmessaoud</h3></div>
+<div class="card"><div class="avatar">S</div><h3>Salma Chanhaji</h3></div>
+<div class="card"><div class="avatar">K</div><h3>Karima Bahou</h3></div>
+<div class="card"><div class="avatar">A</div><h3>Aicha Boussetta</h3></div>
+<div class="card"><div class="avatar">S</div><h3>Soukaina Aadoch</h3></div>
+</div>
+<p style="margin-top:20px">Parce qu’un petit geste peut laisser une grande trace, nous voulons faire de chaque rencontre le début d’un changement durable.</p>
+</section>
+
+<section class="view wrap" id="contact" hidden>
+<h2>Nous rejoindre</h2>
+<p>Artisan, coopérative, bénévole ou partenaire : dites-nous comment vous souhaitez participer.</p>
+<div id="formbox" style="max-width:560px">
+<label for="n">Nom</label><input id="n" autocomplete="name">
+<label for="r">Je suis</label>
+<select id="r"><option>Artisan ou coopérative</option><option>Bénévole</option><option>Partenaire</option></select>
+<label for="m">Message</label><textarea id="m" rows="5"></textarea>
+<p id="err" class="note" style="color:var(--copper)" role="alert"></p>
+<button class="btn" id="send" type="button">Envoyer le message</button>
+</div>
+<div class="ok" id="done" hidden><h3>Message prêt</h3><p>Cette version de démonstration n’envoie pas encore de données. Branchez un service d’envoi pour recevoir les messages.</p></div>
+</section>
+</main>
+<footer>ATHAR • Projet d’action sociale et valorisation de l’artisanat marocain</footer>
+
+<script>
+const A=[
+{n:"Amina El Fassi",m:"Poterie",v:"Safi",d:"Céramique émaillée à la main, motifs hérités de sa grand-mère."},
+{n:"Coopérative Tissage Atlas",m:"Tissage",v:"Azrou",d:"Tapis en laine naturelle, tissés par un collectif de femmes."},
+{n:"Youssef Benali",m:"Maroquinerie",v:"Fès",d:"Cuir tanné de façon traditionnelle, babouches et sacs."},
+{n:"Khadija Idrissi",m:"Broderie",v:"Rabat",d:"Broderie de Rabat, transmise de génération en génération."},
+{n:"Hamid Lahlou",m:"Zellige",v:"Fès",d:"Découpe et assemblage de zellige pour fontaines et tables."},
+{n:"Coopérative Argan Tamri",m:"Huile d’argan",v:"Essaouira",d:"Huile d’argan pressée à froid par une coopérative féminine."}
+];
+const $=s=>document.querySelector(s);
+let fav=[];try{fav=JSON.parse(localStorage.getItem("athar-fav")||"[]")}catch(e){}
+function saveFav(){try{localStorage.setItem("athar-fav",JSON.stringify(fav))}catch(e){}}
+function opts(sel,key){[...new Set(A.map(a=>a[key]))].sort().forEach(x=>{const o=document.createElement("option");o.value=o.textContent=x;sel.appendChild(o)})}
+opts($("#fm"),"m");opts($("#fv"),"v");
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function render(){
+const q=$("#q").value.toLowerCase(),m=$("#fm").value,v=$("#fv").value,f=$("#ff").value;
+const r=A.filter(a=>(!m||a.m===m)&&(!v||a.v===v)&&(!f||fav.includes(a.n))&&(!q||(a.n+a.d+a.m).toLowerCase().includes(q)));
+$("#list").innerHTML=r.length?r.map(a=>{const on=fav.includes(a.n);return `<article class="card"><button class="fav" data-n="${esc(a.n)}" aria-pressed="${on}" aria-label="${on?"Retirer":"Ajouter"} ${esc(a.n)} des favoris">${on?"♥":"♡"}</button><div class="avatar">${esc(a.n[0])}</div><h3>${esc(a.n)}</h3><span class="chip">${esc(a.m)}</span><span class="chip">${esc(a.v)}</span><p class="note" style="color:var(--ink)">${esc(a.d)}</p></article>`}).join(""):`<div class="empty" style="grid-column:1/-1">Aucun profil ne correspond. Modifiez vos filtres.</div>`;
+}
+["#q","#fm","#fv","#ff"].forEach(s=>$(s).addEventListener("input",render));
+$("#list").addEventListener("click",e=>{const b=e.target.closest(".fav");if(!b)return;const n=b.dataset.n;fav=fav.includes(n)?fav.filter(x=>x!==n):[...fav,n];saveFav();render()});
+const views=["accueil","artisans","actions","equipe","contact"];
+function route(){
+const h=(location.hash||"#accueil").slice(1);const id=views.includes(h)?h:"accueil";
+views.forEach(x=>{$("#"+x).hidden=x!==id});
+document.querySelectorAll("nav a").forEach(a=>a.getAttribute("href")==="#"+id?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+$("#send").addEventListener("click",()=>{
+if(!$("#n").value.trim()||!$("#m").value.trim()){$("#err").textContent="Renseignez votre nom et votre message.";return}
+$("#err").textContent="";$("#formbox").hidden=true;$("#done").hidden=false});
+render();route();
+</script>
+</body>
+</html>
