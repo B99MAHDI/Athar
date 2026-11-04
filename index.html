@@ -75,7 +75,6 @@ nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
 <nav class="tabs" aria-label="Navigation principale">
 <a href="#accueil"><span aria-hidden="true">🏠</span>Accueil</a>
 <a href="#artisans"><span aria-hidden="true">🏺</span>Artisans</a>
-<a href="#ajouter"><span aria-hidden="true">➕</span>Ajouter</a>
 <a href="#actions"><span aria-hidden="true">🤝</span>Actions</a>
 <a href="#equipe"><span aria-hidden="true">👥</span>Équipe</a>
 <a href="#contact"><span aria-hidden="true">✉️</span>Contact</a>
@@ -103,7 +102,6 @@ nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
 <section class="view wrap" id="artisans" hidden>
 <h2>Les artisans</h2>
 <p>Parcourez les profils, filtrez par métier ou par ville, et enregistrez vos favoris.</p>
-<p class="note">Profils fictifs, à remplacer par les artisans réels du projet.</p>
 <div class="tools">
 <input id="q" type="search" placeholder="Rechercher un nom, un savoir-faire…" aria-label="Rechercher">
 <select id="fm" aria-label="Filtrer par métier"><option value="">Tous les métiers</option></select>
@@ -113,10 +111,19 @@ nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
 <div class="grid" id="list" aria-live="polite"></div>
 </section>
 
-<section class="view wrap" id="ajouter" hidden>
-<h2>Ajouter un artisan</h2>
-<p>Renseignez le profil : il apparaît aussitôt dans l’annuaire.</p>
-<p class="note">Les profils sont enregistrés dans ce navigateur uniquement. Exportez-les pour les sauvegarder ou les publier.</p>
+<section class="view wrap" id="admin" hidden>
+<h2>Espace équipe</h2>
+<div id="login" style="max-width:420px">
+<p>Connectez-vous pour ajouter ou supprimer des artisans.</p>
+<label for="le">Email</label><input id="le" type="email" autocomplete="username">
+<label for="lp">Mot de passe</label><input id="lp" type="password" autocomplete="current-password">
+<p id="lerr" class="note" style="color:var(--copper)" role="alert"></p>
+<button class="btn" id="lgo" type="button">Se connecter</button>
+</div>
+<div id="adm" hidden>
+<div class="acts"><button class="btn line" id="lout" type="button">Se déconnecter</button></div>
+<h3>Ajouter un artisan</h3>
+<p class="note">Le profil est visible par tous les visiteurs dès l’enregistrement.</p>
 <div style="max-width:560px">
 <label for="an">Nom de l’artisan ou de la coopérative</label><input id="an">
 <label for="am">Métier</label><input id="am" placeholder="Poterie, tissage, broderie…">
@@ -124,16 +131,10 @@ nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
 <label for="ad">Description</label><textarea id="ad" rows="4"></textarea>
 <label for="ap">Photo (facultatif)</label><input id="ap" type="file" accept="image/*">
 <p id="aerr" class="note" style="color:var(--copper)" role="alert"></p>
-<button class="btn" id="aadd" type="button">Ajouter l’artisan</button>
+<button class="btn" id="aadd" type="button">Enregistrer l’artisan</button>
 </div>
-<h3 style="margin-top:36px">Sauvegarde des profils</h3>
-<div class="acts">
-<button class="btn line" id="exp" type="button">Exporter en JSON</button>
-<button class="btn line" id="imp" type="button">Importer un fichier JSON</button>
-<button class="btn line" id="rst" type="button">Rétablir la liste de départ</button>
+<p class="note" style="margin-top:16px">Pour supprimer un profil, ouvrez la page Artisans : le bouton apparaît sur chaque fiche tant que vous êtes connecté.</p>
 </div>
-<input id="impf" type="file" accept="application/json,.json" hidden>
-<p id="msg" class="note" role="status"></p>
 </section>
 
 <section class="view wrap" id="actions" hidden>
@@ -173,61 +174,70 @@ nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
 <div class="ok" id="done" hidden><h3>Message prêt</h3><p>Cette version de démonstration n’envoie pas encore de données. Branchez un service d’envoi pour recevoir les messages.</p></div>
 </section>
 </main>
-<footer>ATHAR • Projet d’action sociale et valorisation de l’artisanat marocain</footer>
+<footer>ATHAR • Projet d’action sociale et valorisation de l’artisanat marocain<br><a href="#admin">Espace équipe</a></footer>
 
 <script>
-const SEED=[
-{n:"Amina El Fassi",m:"Poterie",v:"Safi",d:"Céramique émaillée à la main, motifs hérités de sa grand-mère."},
-{n:"Coopérative Tissage Atlas",m:"Tissage",v:"Azrou",d:"Tapis en laine naturelle, tissés par un collectif de femmes."},
-{n:"Youssef Benali",m:"Maroquinerie",v:"Fès",d:"Cuir tanné de façon traditionnelle, babouches et sacs."},
-{n:"Khadija Idrissi",m:"Broderie",v:"Rabat",d:"Broderie de Rabat, transmise de génération en génération."},
-{n:"Hamid Lahlou",m:"Zellige",v:"Fès",d:"Découpe et assemblage de zellige pour fontaines et tables."},
-{n:"Coopérative Argan Tamri",m:"Huile d’argan",v:"Essaouira",d:"Huile d’argan pressée à froid par une coopérative féminine."}
-];
+const CFG={url:"https://VOTRE-PROJET.supabase.co",key:"VOTRE_CLE_PUBLIQUE"};
 const $=s=>document.querySelector(s);
-let hasLocal=false,BASE=SEED;
-function clean(x){if(!Array.isArray(x)||!x.every(a=>a&&typeof a.n==="string"&&typeof a.m==="string"&&typeof a.v==="string"))return null;return x.map(a=>({n:a.n,m:a.m,v:a.v,d:typeof a.d==="string"?a.d:"",p:typeof a.p==="string"&&a.p.startsWith("data:image/")?a.p:""}))}
-function load(){try{const s=localStorage.getItem("athar-artisans");const x=s&&clean(JSON.parse(s));if(x){hasLocal=true;return x}}catch(e){}return SEED.slice()}
-function save(){try{localStorage.setItem("athar-artisans",JSON.stringify(A))}catch(e){alert("Enregistrement impossible : espace de stockage plein ou indisponible.")}}
-let A=load();
-let fav=[];try{fav=JSON.parse(localStorage.getItem("athar-fav")||"[]")}catch(e){}
+const ok=!/VOTRE/.test(CFG.url+CFG.key);
+let A=[],tok=null,fav=[];
+try{fav=JSON.parse(localStorage.getItem("athar-fav")||"[]")}catch(e){}
+try{tok=sessionStorage.getItem("athar-tok")}catch(e){}
 function saveFav(){try{localStorage.setItem("athar-fav",JSON.stringify(fav))}catch(e){}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+async function api(p,o={}){
+const h={apikey:CFG.key,"Content-Type":"application/json",...(o.h||{})};
+if(o.auth&&tok)h.Authorization="Bearer "+tok;
+const r=await fetch(CFG.url+p,{method:o.m||"GET",headers:h,body:o.b?JSON.stringify(o.b):undefined});
+if(!r.ok){const e=new Error("HTTP "+r.status);e.s=r.status;throw e}
+return r.status===204?null:r.json()}
+function box(t){return `<div class="empty" style="grid-column:1/-1">${t}</div>`}
 function opts(sel,key,all){const cur=sel.value;sel.innerHTML=`<option value="">${all}</option>`;[...new Set(A.map(a=>a[key]))].sort().forEach(x=>{const o=document.createElement("option");o.value=o.textContent=x;sel.appendChild(o)});sel.value=[...sel.options].some(o=>o.value===cur)?cur:""}
-function filters(){opts($("#fm"),"m","Tous les métiers");opts($("#fv"),"v","Toutes les villes")}
-filters();
-function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function filters(){opts($("#fm"),"craft","Tous les métiers");opts($("#fv"),"city","Toutes les villes")}
 function render(){
 const q=$("#q").value.toLowerCase(),m=$("#fm").value,v=$("#fv").value,f=$("#ff").value;
-const r=A.filter(a=>(!m||a.m===m)&&(!v||a.v===v)&&(!f||fav.includes(a.n))&&(!q||(a.n+a.d+a.m).toLowerCase().includes(q)));
-$("#list").innerHTML=r.length?r.map(a=>{const on=fav.includes(a.n);return `<article class="card"><button class="fav" data-n="${esc(a.n)}" aria-pressed="${on}" aria-label="${on?"Retirer":"Ajouter"} ${esc(a.n)} des favoris">${on?"♥":"♡"}</button>${a.p?`<img class="ph" src="${esc(a.p)}" alt="">`:`<div class="avatar">${esc(a.n[0])}</div>`}<h3>${esc(a.n)}</h3><span class="chip">${esc(a.m)}</span><span class="chip">${esc(a.v)}</span><p class="note" style="color:var(--ink)">${esc(a.d)}</p><button class="btn-del" data-del="${esc(a.n)}" type="button">Supprimer ce profil</button></article>`}).join(""):`<div class="empty" style="grid-column:1/-1">Aucun profil ne correspond. Modifiez vos filtres.</div>`;
-}
+const r=A.filter(a=>(!m||a.craft===m)&&(!v||a.city===v)&&(!f||fav.includes(a.id))&&(!q||(a.name+a.description+a.craft).toLowerCase().includes(q)));
+$("#list").innerHTML=r.length?r.map(a=>{const on=fav.includes(a.id);return `<article class="card"><button class="fav" data-id="${a.id}" aria-pressed="${on}" aria-label="${on?"Retirer":"Ajouter"} ${esc(a.name)} des favoris">${on?"♥":"♡"}</button>${a.photo?`<img class="ph" src="${esc(a.photo)}" alt="">`:`<div class="avatar">${esc(a.name[0])}</div>`}<h3>${esc(a.name)}</h3><span class="chip">${esc(a.craft)}</span><span class="chip">${esc(a.city)}</span><p class="note" style="color:var(--ink)">${esc(a.description)}</p>${tok?`<button class="btn-del" data-del="${a.id}" data-n="${esc(a.name)}" type="button">Supprimer ce profil</button>`:""}</article>`}).join(""):box(A.length?"Aucun profil ne correspond. Modifiez vos filtres.":"Aucun artisan pour le moment.")}
+async function load(){
+if(!ok){$("#list").innerHTML=box("Base de données non configurée : renseignez l’adresse et la clé publique dans index.html.");return}
+$("#list").innerHTML=box("Chargement…");
+try{A=await api("/rest/v1/artisans?select=*&order=created_at.desc");filters();render()}catch(e){$("#list").innerHTML=box("Impossible de charger les artisans. Vérifiez votre connexion et réessayez.")}}
 ["#q","#fm","#fv","#ff"].forEach(s=>$(s).addEventListener("input",render));
-$("#list").addEventListener("click",e=>{const d=e.target.closest(".btn-del");if(d){const n=d.dataset.del;if(confirm("Supprimer "+n+" ?")){A=A.filter(a=>a.n!==n);fav=fav.filter(x=>x!==n);save();saveFav();filters();render()}return}const b=e.target.closest(".fav");if(!b)return;const n=b.dataset.n;fav=fav.includes(n)?fav.filter(x=>x!==n):[...fav,n];saveFav();render()});
-const views=["accueil","artisans","ajouter","actions","equipe","contact"];
+function adminUI(){$("#login").hidden=!!tok;$("#adm").hidden=!tok}
+function logout(){tok=null;try{sessionStorage.removeItem("athar-tok")}catch(e){}adminUI();render()}
+function fail(e,el){if(e.s===401||e.s===403){logout();el.textContent="Session expirée ou droits insuffisants : reconnectez-vous."}else el.textContent="Échec de l’opération. Réessayez."}
+$("#list").addEventListener("click",async e=>{
+const d=e.target.closest(".btn-del");
+if(d){if(!confirm("Supprimer "+d.dataset.n+" ?"))return;try{await api("/rest/v1/artisans?id=eq."+encodeURIComponent(d.dataset.del),{m:"DELETE",auth:true});await load()}catch(x){fail(x,{})}return}
+const b=e.target.closest(".fav");if(!b)return;const id=Number(b.dataset.id);
+fav=fav.includes(id)?fav.filter(x=>x!==id):[...fav,id];saveFav();render()});
+$("#lgo").addEventListener("click",async()=>{
+const el=$("#lerr");
+if(!ok){el.textContent="Base de données non configurée.";return}
+try{const r=await fetch(CFG.url+"/auth/v1/token?grant_type=password",{method:"POST",headers:{apikey:CFG.key,"Content-Type":"application/json"},body:JSON.stringify({email:$("#le").value.trim(),password:$("#lp").value})});
+const j=await r.json();if(!r.ok||!j.access_token)throw 0;
+tok=j.access_token;try{sessionStorage.setItem("athar-tok",tok)}catch(x){}
+$("#lp").value="";el.textContent="";adminUI();render()}catch(x){el.textContent="Connexion impossible : vérifiez l’email et le mot de passe."}});
+$("#lout").addEventListener("click",logout);
+function shrink(f){return new Promise(res=>{if(!f)return res("");const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,240/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};i.onerror=()=>res("");i.src=r.result};r.onerror=()=>res("");r.readAsDataURL(f)})}
+$("#aadd").addEventListener("click",async()=>{
+const name=$("#an").value.trim(),craft=$("#am").value.trim(),city=$("#av").value.trim(),description=$("#ad").value.trim(),el=$("#aerr");
+if(!name||!craft||!city){el.textContent="Renseignez le nom, le métier et la ville.";return}
+el.textContent="Enregistrement…";
+try{const photo=await shrink($("#ap").files[0]);
+await api("/rest/v1/artisans",{m:"POST",auth:true,h:{Prefer:"return=minimal"},b:{name,craft,city,description,photo}});
+["#an","#am","#av","#ad","#ap"].forEach(s=>$(s).value="");el.textContent="";await load();location.hash="#artisans"}catch(x){fail(x,el)}});
+const views=["accueil","artisans","actions","equipe","contact","admin"];
 function route(){
 const h=(location.hash||"#accueil").slice(1);const id=views.includes(h)?h:"accueil";
 views.forEach(x=>{$("#"+x).hidden=x!==id});
 document.querySelectorAll("nav a").forEach(a=>a.getAttribute("href")==="#"+id?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
-window.scrollTo(0,0);
-}
+window.scrollTo(0,0)}
 window.addEventListener("hashchange",route);
 $("#send").addEventListener("click",()=>{
 if(!$("#n").value.trim()||!$("#m").value.trim()){$("#err").textContent="Renseignez votre nom et votre message.";return}
 $("#err").textContent="";$("#formbox").hidden=true;$("#done").hidden=false});
-function photo(f){return new Promise(res=>{if(!f)return res("");const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,240/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};i.onerror=()=>res("");i.src=r.result};r.onerror=()=>res("");r.readAsDataURL(f)})}
-$("#aadd").addEventListener("click",async()=>{
-const n=$("#an").value.trim(),m=$("#am").value.trim(),v=$("#av").value.trim(),d=$("#ad").value.trim(),e=$("#aerr");
-if(!n||!m||!v){e.textContent="Renseignez le nom, le métier et la ville.";return}
-if(A.some(a=>a.n.toLowerCase()===n.toLowerCase())){e.textContent="Ce nom existe déjà dans l’annuaire.";return}
-const p=await photo($("#ap").files[0]);
-A.unshift({n,m,v,d,p});save();filters();render();
-["#an","#am","#av","#ad","#ap"].forEach(s=>$(s).value="");e.textContent="";location.hash="#artisans"});
-$("#exp").addEventListener("click",()=>{const u=URL.createObjectURL(new Blob([JSON.stringify(A,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download="artisans.json";a.click();URL.revokeObjectURL(u)});
-$("#imp").addEventListener("click",()=>$("#impf").click());
-$("#impf").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=clean(JSON.parse(r.result));if(!x)throw 0;A=x;save();filters();render();$("#msg").textContent=x.length+" profils importés."}catch(_){$("#msg").textContent="Fichier invalide : il doit contenir une liste de profils avec nom, métier et ville."}e.target.value=""};r.readAsText(f)});
-$("#rst").addEventListener("click",()=>{if(confirm("Rétablir la liste de départ ? Vos ajouts seront perdus.")){A=BASE.slice();save();filters();render()}});
-try{fetch("artisans.json").then(r=>r.ok?r.json():Promise.reject()).then(x=>{const c=clean(x);if(c&&c.length){BASE=c;if(!hasLocal){A=c.slice();filters();render()}}}).catch(()=>{})}catch(e){}
-render();route();
+adminUI();route();load();
 </script>
 </body>
 </html>
