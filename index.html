@@ -6,7 +6,7 @@
 <title>ATHAR – Valorisation de l’artisanat marocain</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
 <header class="top"><div class="wrap bar">
@@ -77,6 +77,17 @@
 <p id="aerr" class="note" style="color:var(--copper)" role="alert"></p>
 <div class="acts"><button class="btn" id="aadd" type="button">Enregistrer l’artisan</button><button class="btn line" id="acancel" type="button" hidden>Annuler la modification</button></div>
 </div>
+<div id="prodbox" hidden style="max-width:560px;margin-top:32px">
+<h3>Produits de cet artisan</h3>
+<p class="note">Ils s’affichent dans la fenêtre « Profil et produits ». Ajout et suppression sont immédiats.</p>
+<div id="prodlist"></div>
+<label for="pn">Nom du produit</label><input id="pn">
+<label for="pp">Prix (facultatif)</label><input id="pp" placeholder="120 MAD">
+<label for="pd">Description (facultatif)</label><textarea id="pd" rows="3"></textarea>
+<label for="ppho">Photo du produit (facultatif)</label><input id="ppho" type="file" accept="image/*">
+<p id="perr" class="note" style="color:var(--copper)" role="alert"></p>
+<button class="btn" id="padd" type="button">Ajouter ce produit</button>
+</div>
 <p class="note" style="margin-top:16px">Pour modifier ou supprimer un profil, ouvrez la page Artisans : les boutons apparaissent sur chaque fiche tant que vous êtes connecté.</p>
 </div>
 </section>
@@ -118,9 +129,11 @@
 <div class="ok" id="done" hidden><h3>Message prêt</h3><p>Cette version de démonstration n’envoie pas encore de données. Branchez un service d’envoi pour recevoir les messages.</p></div>
 </section>
 </main>
+<dialog id="pf" aria-labelledby="pft"><button class="pf-x" id="pfx" type="button" aria-label="Fermer">✕</button><div id="pfc"></div></dialog>
+
 <footer>ATHAR • Projet d’action sociale et valorisation de l’artisanat marocain<br><a href="#admin">Espace équipe</a></footer>
 
-<script src="js/config.js?v=3"></script>
-<script src="js/app.js?v=3"></script>
+<script src="js/config.js?v=4"></script>
+<script src="js/app.js?v=4"></script>
 </body>
 </html>

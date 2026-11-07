@@ -10,7 +10,7 @@ const h={apikey:CFG.key,"Content-Type":"application/json",...(o.h||{})};
 if(o.auth&&tok)h.Authorization="Bearer "+tok;
 const r=await fetch(CFG.url+p,{method:o.m||"GET",headers:h,body:o.b?JSON.stringify(o.b):undefined});
 if(!r.ok){const e=new Error("HTTP "+r.status);e.s=r.status;throw e}
-return r.status===204?null:r.json()}
+const t=await r.text();return t?JSON.parse(t):null}
 function mapUrl(a){const l=String(a.location||"").trim();if(/^https:\/\//i.test(l))return esc(l);return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent((l?l+", ":"")+a.city)}
 function mapLabel(a){const l=String(a.location||"").trim();return !l?a.city:/^https:\/\//i.test(l)?"Voir sur la carte, "+a.city:l}
 function box(t){return `<div class="empty" style="grid-column:1/-1">${t}</div>`}
@@ -19,7 +19,7 @@ function filters(){opts($("#fm"),"craft","Tous les métiers");opts($("#fv"),"cit
 function render(){
 const q=$("#q").value.toLowerCase(),m=$("#fm").value,v=$("#fv").value,f=$("#ff").value;
 const r=A.filter(a=>(!m||a.craft===m)&&(!v||a.city===v)&&(!f||fav.includes(a.id))&&(!q||(a.name+a.description+a.craft).toLowerCase().includes(q)));
-$("#list").innerHTML=r.length?r.map(a=>{const on=fav.includes(a.id);return `<article class="card"><button class="fav" data-id="${a.id}" aria-pressed="${on}" aria-label="${on?"Retirer":"Ajouter"} ${esc(a.name)} des favoris">${on?"♥":"♡"}</button>${a.photo?`<img class="ph" src="${esc(a.photo)}" alt="">`:`<div class="avatar">${esc(a.name[0])}</div>`}<h3>${esc(a.name)}</h3><span class="chip">${esc(a.craft)}</span><span class="chip">${esc(a.city)}</span><p class="note" style="color:var(--ink)">${esc(a.description)}</p>${a.phone?`<p class="ct"><a href="tel:${esc(String(a.phone).replace(/[^\d+]/g,""))}">📞 ${esc(a.phone)}</a></p>`:""}<p class="ct"><a href="${mapUrl(a)}" target="_blank" rel="noopener">📍 ${esc(mapLabel(a))}</a></p>${tok?`<button class="btn-edit" data-edit="${a.id}" type="button">Modifier ce profil</button> <button class="btn-del" data-del="${a.id}" data-n="${esc(a.name)}" type="button">Supprimer ce profil</button>`:""}</article>`}).join(""):box(A.length?"Aucun profil ne correspond. Modifiez vos filtres.":"Aucun artisan pour le moment.")}
+$("#list").innerHTML=r.length?r.map(a=>{const on=fav.includes(a.id);return `<article class="card"><button class="fav" data-id="${a.id}" aria-pressed="${on}" aria-label="${on?"Retirer":"Ajouter"} ${esc(a.name)} des favoris">${on?"♥":"♡"}</button>${a.photo?`<img class="ph" src="${esc(a.photo)}" alt="">`:`<div class="avatar">${esc(a.name[0])}</div>`}<h3>${esc(a.name)}</h3><span class="chip">${esc(a.craft)}</span><span class="chip">${esc(a.city)}</span><p class="note" style="color:var(--ink)">${esc(a.description)}</p>${a.phone?`<p class="ct"><a href="tel:${esc(String(a.phone).replace(/[^\d+]/g,""))}">📞 ${esc(a.phone)}</a></p>`:""}<p class="ct"><a href="${mapUrl(a)}" target="_blank" rel="noopener">📍 ${esc(mapLabel(a))}</a></p><button class="btn-view" data-view="${a.id}" type="button">Voir le profil et les produits</button>${tok?`<button class="btn-edit" data-edit="${a.id}" type="button">Modifier ce profil</button> <button class="btn-del" data-del="${a.id}" data-n="${esc(a.name)}" type="button">Supprimer ce profil</button>`:""}</article>`}).join(""):box(A.length?"Aucun profil ne correspond. Modifiez vos filtres.":"Aucun artisan pour le moment.")}
 async function load(){
 if(!ok){$("#list").innerHTML=box("Base de données non configurée : renseignez l’adresse et la clé publique dans js/config.js.");return}
 $("#list").innerHTML=box("Chargement…");
@@ -29,6 +29,8 @@ function adminUI(){$("#login").hidden=!!tok;$("#adm").hidden=!tok}
 function logout(){tok=null;if(typeof resetForm==="function")resetForm();try{sessionStorage.removeItem("athar-tok")}catch(e){}adminUI();render()}
 function fail(e,el){if(e.s===401||e.s===403){logout();el.textContent="Session expirée ou droits insuffisants : reconnectez-vous."}else el.textContent="Échec de l’opération. Réessayez."}
 $("#list").addEventListener("click",async e=>{
+const vw=e.target.closest(".btn-view");
+if(vw){openProfile(Number(vw.dataset.view));return}
 const ed=e.target.closest(".btn-edit");
 if(ed){startEdit(Number(ed.dataset.edit));return}
 const d=e.target.closest(".btn-del");
@@ -52,14 +54,14 @@ else if(r.status===401||m.includes("api key")||m.includes("apikey"))el.textConte
 else el.textContent="Connexion impossible ("+r.status+(m?" : "+m:"")+").";
 });
 $("#lout").addEventListener("click",logout);
-function shrink(f){return new Promise(res=>{if(!f)return res("");const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,240/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};i.onerror=()=>res("");i.src=r.result};r.onerror=()=>res("");r.readAsDataURL(f)})}
+function shrink(f,m){return new Promise(res=>{if(!f)return res("");const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,(m||240)/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};i.onerror=()=>res("");i.src=r.result};r.onerror=()=>res("");r.readAsDataURL(f)})}
 let editId=null;
 const FIELDS=[["#an","name"],["#am","craft"],["#av","city"],["#ad","description"],["#at","phone"],["#al","location"]];
-function resetForm(){editId=null;[...FIELDS.map(f=>f[0]),"#ap"].forEach(s=>$(s).value="");$("#ftitle").textContent="Ajouter un artisan";$("#aadd").textContent="Enregistrer l’artisan";$("#acancel").hidden=true;$("#phnote").hidden=true;$("#aerr").textContent=""}
+function resetForm(){editId=null;[...FIELDS.map(f=>f[0]),"#ap"].forEach(s=>$(s).value="");$("#ftitle").textContent="Ajouter un artisan";$("#aadd").textContent="Enregistrer l’artisan";$("#acancel").hidden=true;$("#phnote").hidden=true;$("#aerr").textContent="";$("#prodbox").hidden=true}
 function startEdit(id){const a=A.find(x=>x.id===id);if(!a)return;resetForm();editId=id;
 FIELDS.forEach(([s,k])=>$(s).value=a[k]||"");
 $("#ftitle").textContent="Modifier : "+a.name;$("#aadd").textContent="Enregistrer les modifications";$("#acancel").hidden=false;$("#phnote").hidden=false;
-window.location.hash="#admin"}
+$("#prodbox").hidden=false;loadAdminProducts();window.location.hash="#admin"}
 $("#acancel").addEventListener("click",()=>{resetForm();window.location.hash="#artisans"});
 $("#aadd").addEventListener("click",async()=>{
 const name=$("#an").value.trim(),craft=$("#am").value.trim(),city=$("#av").value.trim(),description=$("#ad").value.trim(),phone=$("#at").value.trim(),loc=$("#al").value.trim(),el=$("#aerr");
@@ -85,3 +87,35 @@ $("#send").addEventListener("click",()=>{
 if(!$("#n").value.trim()||!$("#m").value.trim()){$("#err").textContent="Renseignez votre nom et votre message.";return}
 $("#err").textContent="";$("#formbox").hidden=true;$("#done").hidden=false});
 adminUI();route();load();
+
+// ---------- Profil + produits (fenêtre)
+function safeImg(p){return typeof p==="string"&&/^data:image\//.test(p)?p:""}
+function prodCards(list){return list.length?`<div class="pgrid">${list.map(x=>`<article class="prod">${safeImg(x.photo)?`<img src="${esc(safeImg(x.photo))}" alt="${esc(x.name)}">`:""}<h4>${esc(x.name)}</h4>${x.price?`<p class="price">${esc(x.price)}</p>`:""}${x.description?`<p>${esc(x.description)}</p>`:""}</article>`).join("")}</div>`:`<div class="empty">Aucun produit renseigné pour le moment.</div>`}
+async function openProfile(id){
+const a=A.find(x=>x.id===id);if(!a)return;
+const img=safeImg(a.photo);
+$("#pfc").innerHTML=`<div class="pf-head">${img?`<img class="ph" src="${esc(img)}" alt="">`:`<div class="avatar">${esc(a.name[0])}</div>`}<div><h2 id="pft">${esc(a.name)}</h2><span class="chip">${esc(a.craft)}</span><span class="chip">${esc(a.city)}</span></div></div>${a.description?`<p>${esc(a.description)}</p>`:""}${a.phone?`<p class="ct"><a href="tel:${esc(String(a.phone).replace(/[^\d+]/g,""))}">📞 ${esc(a.phone)}</a></p>`:""}<p class="ct"><a href="${mapUrl(a)}" target="_blank" rel="noopener">📍 ${esc(mapLabel(a))}</a></p><h3 class="pf-sec">Produits</h3><div id="pfp"><div class="empty">Chargement…</div></div>`;
+const d=$("#pf");if(!d.open)d.showModal();
+try{const l=await api("/rest/v1/products?artisan_id=eq."+encodeURIComponent(id)+"&select=*&order=created_at.desc");$("#pfp").innerHTML=prodCards(l)}
+catch(e){$("#pfp").innerHTML=`<div class="empty">Impossible de charger les produits. Réessayez plus tard.</div>`}}
+$("#pfx").addEventListener("click",()=>$("#pf").close());
+$("#pf").addEventListener("click",e=>{if(e.target===$("#pf"))$("#pf").close()});
+
+// ---------- Gestion des produits (admin)
+async function loadAdminProducts(){
+const box=$("#prodlist");if(editId===null)return;box.innerHTML=`<p class="note">Chargement…</p>`;
+try{const l=await api("/rest/v1/products?artisan_id=eq."+encodeURIComponent(editId)+"&select=*&order=created_at.desc");
+box.innerHTML=l.length?l.map(x=>`<div class="arow"><span>${esc(x.name)}${x.price?" · "+esc(x.price):""}</span><button class="btn-del" data-pdel="${x.id}" data-n="${esc(x.name)}" type="button">Supprimer</button></div>`).join(""):`<p class="note">Aucun produit pour le moment.</p>`}
+catch(e){box.innerHTML=`<p class="note" style="color:var(--copper)">Impossible de charger les produits : la table « products » existe-t-elle dans Supabase ?</p>`}}
+$("#prodlist").addEventListener("click",async e=>{
+const b=e.target.closest("[data-pdel]");if(!b)return;
+if(!confirm("Supprimer le produit "+b.dataset.n+" ?"))return;
+try{await api("/rest/v1/products?id=eq."+encodeURIComponent(b.dataset.pdel),{m:"DELETE",auth:true});loadAdminProducts()}catch(x){fail(x,$("#perr"))}});
+$("#padd").addEventListener("click",async()=>{
+const name=$("#pn").value.trim(),price=$("#pp").value.trim(),description=$("#pd").value.trim(),el=$("#perr");
+if(editId===null){el.textContent="Ouvrez d’abord un artisan avec « Modifier ce profil ».";return}
+if(!name){el.textContent="Renseignez le nom du produit.";return}
+el.textContent="Enregistrement…";
+try{const photo=await shrink($("#ppho").files[0],480);
+await api("/rest/v1/products",{m:"POST",auth:true,h:{Prefer:"return=minimal"},b:{artisan_id:editId,name,price,description,photo}});
+["#pn","#pp","#pd","#ppho"].forEach(x=>$(x).value="");el.textContent="";loadAdminProducts()}catch(x){fail(x,el)}});
