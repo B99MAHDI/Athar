@@ -1,0 +1,32 @@
+name: Garder Supabase actif
+
+# Contacte la base une fois par jour pour éviter la mise en pause
+# du projet Supabase gratuit après 1 semaine d'inactivité.
+# Aucune configuration : l'adresse et la clé publique sont lues dans js/config.js.
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Contacter la base de données
+        run: |
+          URL=$(grep -o 'url:"[^"]*"' js/config.js | head -1 | cut -d'"' -f2)
+          KEY=$(grep -o 'key:"[^"]*"' js/config.js | head -1 | cut -d'"' -f2)
+          case "$URL$KEY" in
+            ""|*VOTRE*) echo "js/config.js n'est pas renseigné"; exit 1 ;;
+          esac
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            "$URL/rest/v1/artisans?select=id&limit=1" \
+            -H "apikey: $KEY")
+          echo "Réponse de Supabase : $CODE"
+          [ "$CODE" = "200" ]
