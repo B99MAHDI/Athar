@@ -1,73 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ATHAR – Valorisation de l’artisanat marocain</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#f3f5f9;--surface:#fff;--ink:#17233f;--muted:#55607a;--navy:#1b2a4a;--gold:#b8893a;--gold-ink:#7d5a1a;--copper:#a9482f;--line:#d9deea;--on-navy:#f5efe0;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1830;--surface:#17233f;--ink:#eef0f6;--muted:#a9b3cc;--navy:#0a1226;--gold:#d4a554;--gold-ink:#e0b566;--copper:#e0795e;--line:#2b3a5e;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0f1830;--surface:#17233f;--ink:#eef0f6;--muted:#a9b3cc;--navy:#0a1226;--gold:#d4a554;--gold-ink:#e0b566;--copper:#e0795e;--line:#2b3a5e;color-scheme:dark}
-*,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
-body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.6 Mulish,system-ui,sans-serif;padding-bottom:76px}
-h1,h2,h3{font-family:Amiri,Georgia,serif;line-height:1.2;margin:0 0 .5em;color:var(--ink)}
-h2{font-size:1.9rem}h3{font-size:1.25rem}
-p{margin:0 0 1em;max-width:68ch}
-a{color:var(--gold-ink)}
-:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-header.top{background:var(--navy);color:var(--on-navy);position:sticky;top:env(safe-area-inset-top,0px);z-index:20}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--navy);z-index:30}
-.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px}
-.brand{font:700 1.6rem Amiri,Georgia,serif;letter-spacing:.14em;color:var(--gold);text-decoration:none}
-.brand small{font:400 .8rem Mulish,sans-serif;letter-spacing:0;color:var(--on-navy);margin-left:8px}
-nav a{color:inherit;text-decoration:none}
-nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--navy);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));border-top:2px solid var(--gold)}
-nav.tabs a{flex:1;text-align:center;padding:8px 2px;font-size:.78rem;color:var(--on-navy);border-radius:8px}
-nav.tabs a span{display:block;font-size:1.25rem;line-height:1.2}
-nav.tabs a[aria-current="page"]{color:var(--gold);font-weight:700}
-.hero{background:var(--navy);color:var(--on-navy);position:relative;overflow:hidden;padding:48px 0 56px}
-.hero::before{content:"";position:absolute;inset:0;opacity:.16;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 4l9 21 22-6-8 22 15 15-22 6 3 22-19-12-19 12 3-22-22-6 15-15-8-22 22 6z' fill='none' stroke='%23d4a554' stroke-width='1.5'/%3E%3C/svg%3E")}
-.hero .wrap{position:relative}
-.hero .ar{font:400 clamp(4rem,16vw,8rem)/1 Amiri,serif;color:var(--gold);margin:0}
-.hero h1{color:var(--on-navy);font-size:clamp(1.7rem,5vw,2.8rem);max-width:20ch}
-.hero p{color:#dfe3ee}
-.btn{display:inline-block;background:var(--gold);color:#1b1405;font:700 1rem Mulish,sans-serif;border:0;border-radius:999px;padding:12px 24px;cursor:pointer;text-decoration:none;min-height:44px}
-.btn.alt{background:transparent;color:var(--on-navy);border:2px solid var(--gold);margin-left:8px}
-section.view{padding:36px 0}
-.quote{border-inline-start:4px solid var(--gold);padding:4px 0 4px 18px;font:italic 1.2rem/1.5 Amiri,Georgia,serif}
-.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
-.odd{border-top:6px solid var(--c)}
-.odd b{font:700 1.5rem Amiri,serif;color:var(--c)}
-.odd.o5{--c:var(--copper)}.odd.o8{--c:var(--ink)}.odd.o12{--c:var(--gold-ink)}
-.tools{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
-select,input,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:44px;width:100%}
-.tools select,.tools input{width:auto;flex:1 1 180px}
-.chip{display:inline-block;font-size:.8rem;border:1px solid var(--gold);color:var(--gold-ink);border-radius:999px;padding:2px 10px;margin:0 6px 6px 0}
-.avatar{width:56px;height:56px;border-radius:50%;background:var(--navy);color:var(--gold);display:grid;place-items:center;font:700 1.4rem Amiri,serif;margin-bottom:10px}
-.fav{float:right;background:none;border:0;font-size:1.5rem;cursor:pointer;color:var(--copper);min-width:44px;min-height:44px;margin:-10px -10px 0 0}
-.note{font-size:.85rem;color:var(--muted)}
-.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
-label{display:block;font-weight:600;margin:14px 0 4px}
-.ok{background:var(--surface);border:2px solid var(--gold);border-radius:12px;padding:18px}
-.ph{width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;margin-bottom:10px;border:2px solid var(--gold)}
-.btn.line{background:transparent;color:var(--gold-ink);border:2px solid var(--gold)}
-.btn-del{background:none;border:0;color:var(--copper);text-decoration:underline;cursor:pointer;font:inherit;padding:8px 0;min-height:44px}
-.acts{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
-footer{text-align:center;color:var(--muted);font-size:.85rem;padding:24px 20px}
-@media (min-width:760px){
-body{padding-bottom:0}
-nav.tabs{position:static;background:none;border:0;padding:0;display:flex;gap:4px}
-nav.tabs a{flex:none;font-size:.95rem;padding:8px 14px}
-nav.tabs a span{display:none}
-nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
-}
-</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>ATHAR – Valorisation de l’artisanat marocain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <header class="top"><div class="wrap bar">
@@ -82,12 +21,14 @@ nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
 
 <main>
 <section class="view" id="accueil" style="padding:0">
-<div class="hero"><div class="wrap">
-<p class="ar" lang="ar">أثر</p>
-<h1>Un héritage de sens, un avenir de possibilités</h1>
+<div class="hero"><div class="wrap hg">
+<div><p class="kick">Un héritage de sens ✦ Un avenir de possibilités</p>
+<h1>Là où le geste de l’artisan devient héritage</h1>
 <p>ATHAR valorise les savoir-faire des artisans marocains, fait rayonner leurs histoires et préserve leur héritage culturel.</p>
-<a class="btn" href="#artisans">Découvrir les artisans</a><a class="btn alt" href="#contact">Nous rejoindre</a>
+<a class="btn" href="#artisans">Découvrir les artisans</a><a class="btn alt" href="#contact">Nous rejoindre</a></div>
+<div class="arch"><img src="assets/logo.png" alt="Logo ATHAR : un héritage de sens, un avenir de possibilités" width="275" height="223"></div>
 </div></div>
+<div class="band" aria-hidden="true"></div>
 <div class="wrap" style="padding-top:36px;padding-bottom:36px">
 <h2>La problématique</h2>
 <p class="quote">Comment contribuer au développement durable et à l’autonomisation socio-économique des artisans marocains, en valorisant leurs savoir-faire, en renforçant leur visibilité et en proposant des actions adaptées à leurs besoins ?</p>
@@ -128,6 +69,8 @@ nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
 <label for="an">Nom de l’artisan ou de la coopérative</label><input id="an">
 <label for="am">Métier</label><input id="am" placeholder="Poterie, tissage, broderie…">
 <label for="av">Ville</label><input id="av">
+<label for="at">Téléphone (facultatif)</label><input id="at" type="tel" inputmode="tel" autocomplete="off" placeholder="+212 6 00 00 00 00">
+<label for="al">Localisation (facultatif)</label><input id="al" placeholder="Adresse, quartier ou lien Google Maps">
 <label for="ad">Description</label><textarea id="ad" rows="4"></textarea>
 <label for="ap">Photo (facultatif)</label><input id="ap" type="file" accept="image/*">
 <p id="aerr" class="note" style="color:var(--copper)" role="alert"></p>
@@ -176,68 +119,7 @@ nav.tabs a[aria-current="page"]{background:rgba(212,165,84,.18)}
 </main>
 <footer>ATHAR • Projet d’action sociale et valorisation de l’artisanat marocain<br><a href="#admin">Espace équipe</a></footer>
 
-<script>
-const CFG={url:"https://mquwxrexchzrnxacdudl.supabase.co",key:"sb_publishable_2vVoTJovbstBWtdzJF4NFA_4K79JX3-"};
-const $=s=>document.querySelector(s);
-const ok=!/VOTRE/.test(CFG.url+CFG.key);
-let A=[],tok=null,fav=[];
-try{fav=JSON.parse(localStorage.getItem("athar-fav")||"[]")}catch(e){}
-try{tok=sessionStorage.getItem("athar-tok")}catch(e){}
-function saveFav(){try{localStorage.setItem("athar-fav",JSON.stringify(fav))}catch(e){}}
-function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-async function api(p,o={}){
-const h={apikey:CFG.key,"Content-Type":"application/json",...(o.h||{})};
-if(o.auth&&tok)h.Authorization="Bearer "+tok;
-const r=await fetch(CFG.url+p,{method:o.m||"GET",headers:h,body:o.b?JSON.stringify(o.b):undefined});
-if(!r.ok){const e=new Error("HTTP "+r.status);e.s=r.status;throw e}
-return r.status===204?null:r.json()}
-function box(t){return `<div class="empty" style="grid-column:1/-1">${t}</div>`}
-function opts(sel,key,all){const cur=sel.value;sel.innerHTML=`<option value="">${all}</option>`;[...new Set(A.map(a=>a[key]))].sort().forEach(x=>{const o=document.createElement("option");o.value=o.textContent=x;sel.appendChild(o)});sel.value=[...sel.options].some(o=>o.value===cur)?cur:""}
-function filters(){opts($("#fm"),"craft","Tous les métiers");opts($("#fv"),"city","Toutes les villes")}
-function render(){
-const q=$("#q").value.toLowerCase(),m=$("#fm").value,v=$("#fv").value,f=$("#ff").value;
-const r=A.filter(a=>(!m||a.craft===m)&&(!v||a.city===v)&&(!f||fav.includes(a.id))&&(!q||(a.name+a.description+a.craft).toLowerCase().includes(q)));
-$("#list").innerHTML=r.length?r.map(a=>{const on=fav.includes(a.id);return `<article class="card"><button class="fav" data-id="${a.id}" aria-pressed="${on}" aria-label="${on?"Retirer":"Ajouter"} ${esc(a.name)} des favoris">${on?"♥":"♡"}</button>${a.photo?`<img class="ph" src="${esc(a.photo)}" alt="">`:`<div class="avatar">${esc(a.name[0])}</div>`}<h3>${esc(a.name)}</h3><span class="chip">${esc(a.craft)}</span><span class="chip">${esc(a.city)}</span><p class="note" style="color:var(--ink)">${esc(a.description)}</p>${tok?`<button class="btn-del" data-del="${a.id}" data-n="${esc(a.name)}" type="button">Supprimer ce profil</button>`:""}</article>`}).join(""):box(A.length?"Aucun profil ne correspond. Modifiez vos filtres.":"Aucun artisan pour le moment.")}
-async function load(){
-if(!ok){$("#list").innerHTML=box("Base de données non configurée : renseignez l’adresse et la clé publique dans index.html.");return}
-$("#list").innerHTML=box("Chargement…");
-try{A=await api("/rest/v1/artisans?select=*&order=created_at.desc");filters();render()}catch(e){$("#list").innerHTML=box("Impossible de charger les artisans. Vérifiez votre connexion et réessayez.")}}
-["#q","#fm","#fv","#ff"].forEach(s=>$(s).addEventListener("input",render));
-function adminUI(){$("#login").hidden=!!tok;$("#adm").hidden=!tok}
-function logout(){tok=null;try{sessionStorage.removeItem("athar-tok")}catch(e){}adminUI();render()}
-function fail(e,el){if(e.s===401||e.s===403){logout();el.textContent="Session expirée ou droits insuffisants : reconnectez-vous."}else el.textContent="Échec de l’opération. Réessayez."}
-$("#list").addEventListener("click",async e=>{
-const d=e.target.closest(".btn-del");
-if(d){if(!confirm("Supprimer "+d.dataset.n+" ?"))return;try{await api("/rest/v1/artisans?id=eq."+encodeURIComponent(d.dataset.del),{m:"DELETE",auth:true});await load()}catch(x){fail(x,{})}return}
-const b=e.target.closest(".fav");if(!b)return;const id=Number(b.dataset.id);
-fav=fav.includes(id)?fav.filter(x=>x!==id):[...fav,id];saveFav();render()});
-$("#lgo").addEventListener("click",async()=>{
-const el=$("#lerr");
-if(!ok){el.textContent="Base de données non configurée.";return}
-try{const r=await fetch(CFG.url+"/auth/v1/token?grant_type=password",{method:"POST",headers:{apikey:CFG.key,"Content-Type":"application/json"},body:JSON.stringify({email:$("#le").value.trim(),password:$("#lp").value})});
-const j=await r.json();if(!r.ok||!j.access_token)throw 0;
-tok=j.access_token;try{sessionStorage.setItem("athar-tok",tok)}catch(x){}
-$("#lp").value="";el.textContent="";adminUI();render()}catch(x){el.textContent="Connexion impossible : vérifiez l’email et le mot de passe."}});
-$("#lout").addEventListener("click",logout);
-function shrink(f){return new Promise(res=>{if(!f)return res("");const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,240/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};i.onerror=()=>res("");i.src=r.result};r.onerror=()=>res("");r.readAsDataURL(f)})}
-$("#aadd").addEventListener("click",async()=>{
-const name=$("#an").value.trim(),craft=$("#am").value.trim(),city=$("#av").value.trim(),description=$("#ad").value.trim(),el=$("#aerr");
-if(!name||!craft||!city){el.textContent="Renseignez le nom, le métier et la ville.";return}
-el.textContent="Enregistrement…";
-try{const photo=await shrink($("#ap").files[0]);
-await api("/rest/v1/artisans",{m:"POST",auth:true,h:{Prefer:"return=minimal"},b:{name,craft,city,description,photo}});
-["#an","#am","#av","#ad","#ap"].forEach(s=>$(s).value="");el.textContent="";await load();location.hash="#artisans"}catch(x){fail(x,el)}});
-const views=["accueil","artisans","actions","equipe","contact","admin"];
-function route(){
-const h=(location.hash||"#accueil").slice(1);const id=views.includes(h)?h:"accueil";
-views.forEach(x=>{$("#"+x).hidden=x!==id});
-document.querySelectorAll("nav a").forEach(a=>a.getAttribute("href")==="#"+id?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
-window.scrollTo(0,0)}
-window.addEventListener("hashchange",route);
-$("#send").addEventListener("click",()=>{
-if(!$("#n").value.trim()||!$("#m").value.trim()){$("#err").textContent="Renseignez votre nom et votre message.";return}
-$("#err").textContent="";$("#formbox").hidden=true;$("#done").hidden=false});
-adminUI();route();load();
-</script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
