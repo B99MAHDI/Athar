@@ -19,16 +19,18 @@ function filters(){opts($("#fm"),"craft","Tous les métiers");opts($("#fv"),"cit
 function render(){
 const q=$("#q").value.toLowerCase(),m=$("#fm").value,v=$("#fv").value,f=$("#ff").value;
 const r=A.filter(a=>(!m||a.craft===m)&&(!v||a.city===v)&&(!f||fav.includes(a.id))&&(!q||(a.name+a.description+a.craft).toLowerCase().includes(q)));
-$("#list").innerHTML=r.length?r.map(a=>{const on=fav.includes(a.id);return `<article class="card"><button class="fav" data-id="${a.id}" aria-pressed="${on}" aria-label="${on?"Retirer":"Ajouter"} ${esc(a.name)} des favoris">${on?"♥":"♡"}</button>${a.photo?`<img class="ph" src="${esc(a.photo)}" alt="">`:`<div class="avatar">${esc(a.name[0])}</div>`}<h3>${esc(a.name)}</h3><span class="chip">${esc(a.craft)}</span><span class="chip">${esc(a.city)}</span><p class="note" style="color:var(--ink)">${esc(a.description)}</p>${a.phone?`<p class="ct"><a href="tel:${esc(String(a.phone).replace(/[^\d+]/g,""))}">📞 ${esc(a.phone)}</a></p>`:""}<p class="ct"><a href="${mapUrl(a)}" target="_blank" rel="noopener">📍 ${esc(mapLabel(a))}</a></p>${tok?`<button class="btn-del" data-del="${a.id}" data-n="${esc(a.name)}" type="button">Supprimer ce profil</button>`:""}</article>`}).join(""):box(A.length?"Aucun profil ne correspond. Modifiez vos filtres.":"Aucun artisan pour le moment.")}
+$("#list").innerHTML=r.length?r.map(a=>{const on=fav.includes(a.id);return `<article class="card"><button class="fav" data-id="${a.id}" aria-pressed="${on}" aria-label="${on?"Retirer":"Ajouter"} ${esc(a.name)} des favoris">${on?"♥":"♡"}</button>${a.photo?`<img class="ph" src="${esc(a.photo)}" alt="">`:`<div class="avatar">${esc(a.name[0])}</div>`}<h3>${esc(a.name)}</h3><span class="chip">${esc(a.craft)}</span><span class="chip">${esc(a.city)}</span><p class="note" style="color:var(--ink)">${esc(a.description)}</p>${a.phone?`<p class="ct"><a href="tel:${esc(String(a.phone).replace(/[^\d+]/g,""))}">📞 ${esc(a.phone)}</a></p>`:""}<p class="ct"><a href="${mapUrl(a)}" target="_blank" rel="noopener">📍 ${esc(mapLabel(a))}</a></p>${tok?`<button class="btn-edit" data-edit="${a.id}" type="button">Modifier ce profil</button> <button class="btn-del" data-del="${a.id}" data-n="${esc(a.name)}" type="button">Supprimer ce profil</button>`:""}</article>`}).join(""):box(A.length?"Aucun profil ne correspond. Modifiez vos filtres.":"Aucun artisan pour le moment.")}
 async function load(){
 if(!ok){$("#list").innerHTML=box("Base de données non configurée : renseignez l’adresse et la clé publique dans js/config.js.");return}
 $("#list").innerHTML=box("Chargement…");
 try{A=await api("/rest/v1/artisans?select=*&order=created_at.desc");filters();render()}catch(e){$("#list").innerHTML=box("Impossible de charger les artisans. Vérifiez votre connexion et réessayez.")}}
 ["#q","#fm","#fv","#ff"].forEach(s=>$(s).addEventListener("input",render));
 function adminUI(){$("#login").hidden=!!tok;$("#adm").hidden=!tok}
-function logout(){tok=null;try{sessionStorage.removeItem("athar-tok")}catch(e){}adminUI();render()}
+function logout(){tok=null;if(typeof resetForm==="function")resetForm();try{sessionStorage.removeItem("athar-tok")}catch(e){}adminUI();render()}
 function fail(e,el){if(e.s===401||e.s===403){logout();el.textContent="Session expirée ou droits insuffisants : reconnectez-vous."}else el.textContent="Échec de l’opération. Réessayez."}
 $("#list").addEventListener("click",async e=>{
+const ed=e.target.closest(".btn-edit");
+if(ed){startEdit(Number(ed.dataset.edit));return}
 const d=e.target.closest(".btn-del");
 if(d){if(!confirm("Supprimer "+d.dataset.n+" ?"))return;try{await api("/rest/v1/artisans?id=eq."+encodeURIComponent(d.dataset.del),{m:"DELETE",auth:true});await load()}catch(x){fail(x,{})}return}
 const b=e.target.closest(".fav");if(!b)return;const id=Number(b.dataset.id);
@@ -51,15 +53,27 @@ else el.textContent="Connexion impossible ("+r.status+(m?" : "+m:"")+").";
 });
 $("#lout").addEventListener("click",logout);
 function shrink(f){return new Promise(res=>{if(!f)return res("");const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,240/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};i.onerror=()=>res("");i.src=r.result};r.onerror=()=>res("");r.readAsDataURL(f)})}
+let editId=null;
+const FIELDS=[["#an","name"],["#am","craft"],["#av","city"],["#ad","description"],["#at","phone"],["#al","location"]];
+function resetForm(){editId=null;[...FIELDS.map(f=>f[0]),"#ap"].forEach(s=>$(s).value="");$("#ftitle").textContent="Ajouter un artisan";$("#aadd").textContent="Enregistrer l’artisan";$("#acancel").hidden=true;$("#phnote").hidden=true;$("#aerr").textContent=""}
+function startEdit(id){const a=A.find(x=>x.id===id);if(!a)return;resetForm();editId=id;
+FIELDS.forEach(([s,k])=>$(s).value=a[k]||"");
+$("#ftitle").textContent="Modifier : "+a.name;$("#aadd").textContent="Enregistrer les modifications";$("#acancel").hidden=false;$("#phnote").hidden=false;
+window.location.hash="#admin"}
+$("#acancel").addEventListener("click",()=>{resetForm();window.location.hash="#artisans"});
 $("#aadd").addEventListener("click",async()=>{
-const name=$("#an").value.trim(),craft=$("#am").value.trim(),city=$("#av").value.trim(),description=$("#ad").value.trim(),phone=$("#at").value.trim(),location=$("#al").value.trim(),el=$("#aerr");
+const name=$("#an").value.trim(),craft=$("#am").value.trim(),city=$("#av").value.trim(),description=$("#ad").value.trim(),phone=$("#at").value.trim(),loc=$("#al").value.trim(),el=$("#aerr");
 if(!name||!craft||!city){el.textContent="Renseignez le nom, le métier et la ville.";return}
 if(phone&&!/^\+?[\d\s().-]{6,20}$/.test(phone)){el.textContent="Numéro de téléphone invalide (chiffres, espaces, + ou -).";return}
-if(location.length>300){el.textContent="La localisation est trop longue.";return}
+if(loc.length>300){el.textContent="La localisation est trop longue.";return}
 el.textContent="Enregistrement…";
 try{const photo=await shrink($("#ap").files[0]);
-await api("/rest/v1/artisans",{m:"POST",auth:true,h:{Prefer:"return=minimal"},b:{name,craft,city,description,photo,phone,location}});
-["#an","#am","#av","#ad","#ap","#at","#al"].forEach(s=>$(s).value="");el.textContent="";await load();location.hash="#artisans"}catch(x){fail(x,el)}});
+const body={name,craft,city,description,phone,location:loc};
+if(editId===null){body.photo=photo;await api("/rest/v1/artisans",{m:"POST",auth:true,h:{Prefer:"return=minimal"},b:body})}
+else{if(photo)body.photo=photo;
+const r=await api("/rest/v1/artisans?id=eq."+encodeURIComponent(editId),{m:"PATCH",auth:true,h:{Prefer:"return=representation"},b:body});
+if(!r||!r.length){el.textContent="Modification refusée par la base : ajoutez la règle « modification equipe » (script SQL) dans Supabase.";return}}
+resetForm();await load();window.location.hash="#artisans"}catch(x){fail(x,el)}});
 const views=["accueil","artisans","actions","equipe","contact","admin"];
 function route(){
 const h=(location.hash||"#accueil").slice(1);const id=views.includes(h)?h:"accueil";

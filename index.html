@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>ATHAR – Valorisation de l’artisanat marocain</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ATHAR – Valorisation de l’artisanat marocain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
 <header class="top"><div class="wrap bar">
@@ -63,7 +63,7 @@
 </div>
 <div id="adm" hidden>
 <div class="acts"><button class="btn line" id="lout" type="button">Se déconnecter</button></div>
-<h3>Ajouter un artisan</h3>
+<h3 id="ftitle">Ajouter un artisan</h3>
 <p class="note">Le profil est visible par tous les visiteurs dès l’enregistrement.</p>
 <div style="max-width:560px">
 <label for="an">Nom de l’artisan ou de la coopérative</label><input id="an">
@@ -73,10 +73,11 @@
 <label for="al">Localisation (facultatif)</label><input id="al" placeholder="Adresse, quartier ou lien Google Maps">
 <label for="ad">Description</label><textarea id="ad" rows="4"></textarea>
 <label for="ap">Photo (facultatif)</label><input id="ap" type="file" accept="image/*">
+<p id="phnote" class="note" hidden>Laissez vide pour conserver la photo actuelle.</p>
 <p id="aerr" class="note" style="color:var(--copper)" role="alert"></p>
-<button class="btn" id="aadd" type="button">Enregistrer l’artisan</button>
+<div class="acts"><button class="btn" id="aadd" type="button">Enregistrer l’artisan</button><button class="btn line" id="acancel" type="button" hidden>Annuler la modification</button></div>
 </div>
-<p class="note" style="margin-top:16px">Pour supprimer un profil, ouvrez la page Artisans : le bouton apparaît sur chaque fiche tant que vous êtes connecté.</p>
+<p class="note" style="margin-top:16px">Pour modifier ou supprimer un profil, ouvrez la page Artisans : les boutons apparaissent sur chaque fiche tant que vous êtes connecté.</p>
 </div>
 </section>
 
@@ -119,7 +120,7 @@
 </main>
 <footer>ATHAR • Projet d’action sociale et valorisation de l’artisanat marocain<br><a href="#admin">Espace équipe</a></footer>
 
-<script src="js/config.js"></script>
-<script src="js/app.js"></script>
+<script src="js/config.js?v=3"></script>
+<script src="js/app.js?v=3"></script>
 </body>
 </html>
