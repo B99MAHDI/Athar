@@ -21,7 +21,7 @@ const q=$("#q").value.toLowerCase(),m=$("#fm").value,v=$("#fv").value,f=$("#ff")
 const r=A.filter(a=>(!m||a.craft===m)&&(!v||a.city===v)&&(!f||fav.includes(a.id))&&(!q||(a.name+a.description+a.craft).toLowerCase().includes(q)));
 $("#list").innerHTML=r.length?r.map(a=>{const on=fav.includes(a.id);return `<article class="card"><button class="fav" data-id="${a.id}" aria-pressed="${on}" aria-label="${on?"Retirer":"Ajouter"} ${esc(a.name)} des favoris">${on?"♥":"♡"}</button>${a.photo?`<img class="ph" src="${esc(a.photo)}" alt="">`:`<div class="avatar">${esc(a.name[0])}</div>`}<h3>${esc(a.name)}</h3><span class="chip">${esc(a.craft)}</span><span class="chip">${esc(a.city)}</span><p class="note" style="color:var(--ink)">${esc(a.description)}</p>${a.phone?`<p class="ct"><a href="tel:${esc(String(a.phone).replace(/[^\d+]/g,""))}">📞 ${esc(a.phone)}</a></p>`:""}<p class="ct"><a href="${mapUrl(a)}" target="_blank" rel="noopener">📍 ${esc(mapLabel(a))}</a></p>${tok?`<button class="btn-del" data-del="${a.id}" data-n="${esc(a.name)}" type="button">Supprimer ce profil</button>`:""}</article>`}).join(""):box(A.length?"Aucun profil ne correspond. Modifiez vos filtres.":"Aucun artisan pour le moment.")}
 async function load(){
-if(!ok){$("#list").innerHTML=box("Base de données non configurée : renseignez l’adresse et la clé publique dans index.html.");return}
+if(!ok){$("#list").innerHTML=box("Base de données non configurée : renseignez l’adresse et la clé publique dans js/config.js.");return}
 $("#list").innerHTML=box("Chargement…");
 try{A=await api("/rest/v1/artisans?select=*&order=created_at.desc");filters();render()}catch(e){$("#list").innerHTML=box("Impossible de charger les artisans. Vérifiez votre connexion et réessayez.")}}
 ["#q","#fm","#fv","#ff"].forEach(s=>$(s).addEventListener("input",render));
@@ -35,11 +35,20 @@ const b=e.target.closest(".fav");if(!b)return;const id=Number(b.dataset.id);
 fav=fav.includes(id)?fav.filter(x=>x!==id):[...fav,id];saveFav();render()});
 $("#lgo").addEventListener("click",async()=>{
 const el=$("#lerr");
-if(!ok){el.textContent="Base de données non configurée.";return}
-try{const r=await fetch(CFG.url+"/auth/v1/token?grant_type=password",{method:"POST",headers:{apikey:CFG.key,"Content-Type":"application/json"},body:JSON.stringify({email:$("#le").value.trim(),password:$("#lp").value})});
-const j=await r.json();if(!r.ok||!j.access_token)throw 0;
-tok=j.access_token;try{sessionStorage.setItem("athar-tok",tok)}catch(x){}
-$("#lp").value="";el.textContent="";adminUI();render()}catch(x){el.textContent="Connexion impossible : vérifiez l’email et le mot de passe."}});
+if(!ok){el.textContent="Base de données non configurée : renseignez js/config.js.";return}
+el.textContent="Connexion…";
+let r,j={};
+try{r=await fetch(CFG.url+"/auth/v1/token?grant_type=password",{method:"POST",headers:{apikey:CFG.key,"Content-Type":"application/json"},body:JSON.stringify({email:$("#le").value.trim(),password:$("#lp").value})});
+try{j=await r.json()}catch(x){}}
+catch(x){el.textContent="Impossible de joindre Supabase : vérifiez l’adresse (url) dans js/config.js et votre connexion.";return}
+if(r.ok&&j.access_token){tok=j.access_token;try{sessionStorage.setItem("athar-tok",tok)}catch(x){}
+$("#lp").value="";el.textContent="";adminUI();render();return}
+const m=String(j.msg||j.error_description||j.message||"").toLowerCase();
+if(m.includes("not confirmed"))el.textContent="Email non confirmé : dans Supabase, ouvrez Authentication > Users, ouvrez l’utilisateur et confirmez-le.";
+else if(m.includes("invalid login"))el.textContent="Email ou mot de passe incorrect pour ce projet Supabase. Vérifiez que l’utilisateur existe dans Authentication > Users.";
+else if(r.status===401||m.includes("api key")||m.includes("apikey"))el.textContent="Clé publique refusée : vérifiez la clé (key) dans js/config.js, sans espace ni guillemet en trop.";
+else el.textContent="Connexion impossible ("+r.status+(m?" : "+m:"")+").";
+});
 $("#lout").addEventListener("click",logout);
 function shrink(f){return new Promise(res=>{if(!f)return res("");const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,240/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.8))};i.onerror=()=>res("");i.src=r.result};r.onerror=()=>res("");r.readAsDataURL(f)})}
 $("#aadd").addEventListener("click",async()=>{
